@@ -1,0 +1,21 @@
+source_folder: "C:/Dokumente/Sync"
+
+sharepoint:
+  site_url: "https://contoso.sharepoint.com/sites/MySite"
+  target_library: "Dokumente"
+  target_folder: "Upload"
+
+sync:
+  delete_remote_if_local_deleted: false
+  upload_chunk_size_mb: 10
+
+state:
+  state_file: "sync_state.json"
+
+logging:
+  log_dir: "logs"
+  log_level: "INFO"
+
+http:
+  max_retries: 5
+  backoff_base_seconds: 2
