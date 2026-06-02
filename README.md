@@ -107,6 +107,41 @@ logging:
 
 ---
 
+## Ordner-Analyse (Pre-Flight)
+
+Vor dem ersten Sync empfiehlt es sich, den Quellordner auf Probleme zu prüfen:
+
+```bash
+# Analyse mit Konsolen-Report
+python analyze_folder.py X:\Daten\Projektordner
+
+# Mit Angabe des Zielordners (prüft auch volle Pfadlängen)
+python analyze_folder.py X:\Daten\Projekt --target-folder "Dokumente/Upload"
+
+# JSON-Output (für Weiterverarbeitung oder Protokollierung)
+python analyze_folder.py X:\Daten\Projekt --json > report.json
+```
+
+**Was geprüft wird:**
+
+| Check | Typ |
+|---|---|
+| Gesamtgröße, Dateianzahl, Dateitypen | Info |
+| Top 10 größte Dateien | Info |
+| Dateiname > 256 Zeichen | Fehler |
+| Voller Pfad > 400 Zeichen | Fehler |
+| Illegale Zeichen (`~ # % & * { } \ : < > ? / \| "`) | Fehler |
+| Reservierte Namen (`CON`, `NUL`, `COM1`–`COM9`, ...) | Fehler |
+| Datei > 250 GB (Graph API Limit) | Fehler |
+| Office-Temp-Dateien (`~$...`) | Warnung |
+| Dateien > 100 MB (chunked Upload) | Warnung |
+| Leerzeichen am Anfang/Ende des Dateinamens | Warnung |
+| Dateiname endet mit Punkt | Warnung |
+
+**Exit Codes:** `0` = bereit, `1` = Fehler gefunden, `2` = ungültiger Pfad
+
+---
+
 ## Verwendung
 
 ```bash
@@ -167,6 +202,7 @@ rekursiv       UNCHANGED?         (≤4 MB PUT)       atomar
 sharepoint-upload/
 ├── .env.example           # Template für Credentials
 ├── .gitignore
+├── analyze_folder.py      # Pre-Flight Ordner-Analyse
 ├── config.yaml            # Konfiguration
 ├── requirements.txt
 ├── setup_entra.py         # Entra ID Setup (Python)
